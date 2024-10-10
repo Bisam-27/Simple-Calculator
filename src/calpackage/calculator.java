@@ -34,75 +34,92 @@ public class calculator {
         frame.setSize(300, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        
+
+        // Add button event handler
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    int num1 = Integer.parseInt(textField1.getText());
-                    int num2 = Integer.parseInt(textField2.getText());
-                    int result = addition(num1, num2);
-                    resultArea.append("Addition Result: " + result + "\n");
-                } catch (IllegalArgumentException ex) {
-                    resultArea.append("Error: " + ex.getMessage() + "\n");
-                }
+                handleCalculation("add");
             }
         });
-        
+
+        // Multiply button event handler
         multiplyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    int num1 = Integer.parseInt(textField1.getText());
-                    int num2 = Integer.parseInt(textField2.getText());
-                    int result = multiplication(num1, num2);
-                    resultArea.append("Multiplication Result: " + result + "\n");
-                } catch (IllegalArgumentException ex) {
-                    resultArea.append("Error: " + ex.getMessage() + "\n");
-                }
+                handleCalculation("multiply");
             }
         });
     }
 
-    public int addition(int a, int b) throws IllegalArgumentException {
-        if (a < 0 || b < 0) {
-            throw new IllegalArgumentException("Both inputs must be non-negative.");
+    private void handleCalculation(String operation) {
+        try {
+            int num1 = Integer.parseInt(textField1.getText());
+            int num2 = Integer.parseInt(textField2.getText());
+
+            if (num1 < 0 || num2 < 0) {
+                resultArea.append("Error: Inputs must be non-negative.\n");
+                return;
+            }
+
+            int result;
+            if ("add".equals(operation)) {
+                result = addition(num1, num2);
+                resultArea.append("Addition Result: " + result + "\n");
+            } else if ("multiply".equals(operation)) {
+                result = multiplication(num1, num2);
+                resultArea.append("Multiplication Result: " + result + "\n");
+            }
+        } catch (NumberFormatException ex) {
+            resultArea.append("Error: Please enter valid numbers.\n");
         }
+    }
+
+    public int addition(int a, int b) {
         return a + b;
     }
 
-    public int multiplication(int a, int b) throws IllegalArgumentException {
-        if (a < 0 || b < 0) {
-            throw new IllegalArgumentException("Both inputs must be non-negative.");
-        }
+    public int multiplication(int a, int b) {
         return a * b;
     }
 
     public boolean validateUser(String username, String password) {
-        // Check username length (between 5 and 15 characters)
+        // Check username length (between 5 and 15 characters) and no special characters
         if (username.length() < 5 || username.length() > 15) {
             System.out.println("Error: Username must be between 5 and 15 characters.");
             return false;
         }
+        if (containsSpecialCharacter(username)) {
+            System.out.println("Error: Username should not contain special characters.");
+            return false;
+        }
 
-        // Check if password contains at least one special character
-        if (!containsSpecialCharacter(password)) {
-            System.out.println("Error: Password must contain at least one special character.");
+        // Check if password contains at least one special character and at least one digit
+        if (!containsSpecialCharacter(password) || !containsDigit(password)) {
+            System.out.println("Error: Password must contain at least one special character and one digit.");
             return false;
         }
 
         return true; // Validation passed
     }
 
-    private boolean containsSpecialCharacter(String password) {
-        // Check for special characters
+    private boolean containsSpecialCharacter(String input) {
         String specialCharacters = "!@#$%^&*()-_=+[]{}|;:'\",.<>?/`~";
-        for (char c : password.toCharArray()) {
+        for (char c : input.toCharArray()) {
             if (specialCharacters.indexOf(c) >= 0) {
                 return true; // Found a special character
             }
         }
         return false; // No special characters found
+    }
+
+    private boolean containsDigit(String input) {
+        for (char c : input.toCharArray()) {
+            if (Character.isDigit(c)) {
+                return true; // Found a digit
+            }
+        }
+        return false; // No digits found
     }
 
     public static void main(String[] args) {
