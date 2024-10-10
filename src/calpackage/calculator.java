@@ -23,7 +23,7 @@ public class calculator
         JButton multiplyButton = new JButton("Multiply");
 
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
+        panel.setLayout(new GridLayout());
         panel.add(new JLabel("Number 1:"));
         panel.add(textField1);
         panel.add(new JLabel("Number 2:"));
